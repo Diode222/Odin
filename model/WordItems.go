@@ -8,7 +8,7 @@ const (
 	SPARSE_DATA    DataAmountType = 2
 )
 
-type WordItems = []*WordItem
+type WordItems []*WordItem
 
 func (wordItems WordItem) Len() int {
 	return wordItems.Len()

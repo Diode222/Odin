@@ -16,9 +16,9 @@ type WordItems struct {
 	Words []*WordItem
 }
 
-func FormatWordItems(data model.WordItems) WordItems {
+func FormatWordItems(data *model.WordItems) *WordItems {
 	formatWordItems := WordItems{Words: []*WordItem{}}
-	for _, wordItem := range data {
+	for _, wordItem := range *data {
 		var pos string
 		switch wordItem.Pos {
 		case model.NOUN:
@@ -41,5 +41,5 @@ func FormatWordItems(data model.WordItems) WordItems {
 			SendTime: wordItem.SendTime,
 		})
 	}
-	return formatWordItems
+	return &formatWordItems
 }

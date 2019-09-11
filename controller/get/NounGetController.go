@@ -34,6 +34,6 @@ func (ctrl *NounGetController) Get() {
 	if (err != nil) {
 		ctrl.Data["json"] = err.Error()
 	} else {
-		ctrl.Data["json"] = view.FormatWordItems(data)
+		ctrl.Data["json"] = view.FormatWordItems(&data)
 	}
 }

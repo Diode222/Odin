@@ -7,13 +7,13 @@ import (
 
 func init() {
 
-	beego.GlobalControllerRouter["Odin/controller/get:NounGetController"] = append(beego.GlobalControllerRouter["Odin/controller/get:NounGetController"],
-		beego.ControllerComments{
-			Method:           "Get",
-			Router:           `/get`,
-			AllowHTTPMethods: []string{"Get"},
-			MethodParams:     param.Make(),
-			Filters:          nil,
-			Params:           nil})
+    beego.GlobalControllerRouter["Odin/controller/get:NounGetController"] = append(beego.GlobalControllerRouter["Odin/controller/get:NounGetController"],
+        beego.ControllerComments{
+            Method: "Get",
+            Router: `/get`,
+            AllowHTTPMethods: []string{"Get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
 
 }

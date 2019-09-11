@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "Odin/router"
+	_ "Odin/routers"
 
 	"github.com/astaxie/beego"
 )
