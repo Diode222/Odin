@@ -1,6 +1,6 @@
 package view
 
-import "Odin/model"
+import "github.com/Diode222/Odin/model"
 
 type WordItem struct {
 	Word  string

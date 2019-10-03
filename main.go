@@ -1,15 +1,18 @@
 package main
 
 import (
-	_ "Odin/routers"
-
-	"github.com/astaxie/beego"
+	"fmt"
+	"github.com/Diode222/Odin/app"
+	"github.com/gin-gonic/gin"
+	"log"
 )
 
 func main() {
-	if beego.BConfig.RunMode == "dev" {
-		beego.BConfig.WebConfig.DirectoryIndex = true
-		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+	engine := gin.Default()
+	handler := app.NewHandler()
+	engine.Any("/get", handler.GetCtrl.Get)
+	err := engine.Run(":38888")
+	if err != nil {
+		log.Printf(fmt.Sprintf("Odin server can not run to listen port: %d, err: %s", 38888, err.Error()))
 	}
-	beego.Run()
 }
