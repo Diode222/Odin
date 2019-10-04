@@ -1,13 +1,5 @@
 package model
 
-type DataAmountType int
-
-const (
-	INTENSIVE_DATA DataAmountType = 0
-	MODERATE_DATA  DataAmountType = 1
-	SPARSE_DATA    DataAmountType = 2
-)
-
 type WordItems []*WordItem
 
 func (wordItems WordItem) Len() int {

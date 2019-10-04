@@ -28,23 +28,9 @@ func NewGetCtrl(getDAO dao.DataGetter) *GetController {
 	return c
 }
 
-// @router /get [Get]
 func (ctrl *GetController) Get(context *gin.Context) {
-	dataAmountStr := context.Query("data_amount")
 	posStr := context.Query("part_of_speech")
-	var dataAmount model.DataAmountType
 	var pos model.PartOfSpeech
-
-	switch dataAmountStr {
-	case "intense":
-		dataAmount = model.INTENSIVE_DATA
-	case "moderate":
-		dataAmount = model.MODERATE_DATA
-	case "sparse":
-		dataAmount = model.SPARSE_DATA
-	default:
-		dataAmount = model.INTENSIVE_DATA
-	}
 
 	switch posStr {
 	case "noun":
@@ -59,30 +45,35 @@ func (ctrl *GetController) Get(context *gin.Context) {
 		pos = model.NOUN
 	}
 
-	data, err := ctrl.dao.GetData(context, dataAmount, pos)
 	if (pos == model.NOUN) {
 		buf := make([]byte, 4096, 4096)
 		n, err := context.Request.Body.Read(buf)
-		if err != nil {
+		fmt.Println("request method: ", context.Request.Method)
+
+		fmt.Println("read data length: ", n)
+		if context.Error(err) != nil {
 			log.Printf("Read request failed")
 		}
 
-		var chatMessageList *proto_gen.ChatMessageList
-		err = proto.Unmarshal(buf[:n], chatMessageList)
-		if err != nil {
-			fmt.Println("proto unmarshal failed")
-		}
-		for _, chatMessage := range chatMessageList.ChatMessages {
-			fmt.Println("chatMessage: " + chatMessage.GetMessage())
-			fmt.Println("time: " + string(chatMessage.GetTime()))
-			fmt.Println("chatPerson: " + chatMessage.GetChatPerson())
+		if n > 0 {
+			var chatMessageList *proto_gen.ChatMessageList = &proto_gen.ChatMessageList{
+				ChatMessages: []*proto_gen.ChatMessage{},
+			}
+			err = proto.Unmarshal(buf[:n], chatMessageList)
+			if err != nil {
+				fmt.Println("proto unmarshal failed")
+			}
+			for _, chatMessage := range chatMessageList.ChatMessages {
+				fmt.Println("chatMessage: " + chatMessage.GetMessage())
+				fmt.Println("time: " + string(chatMessage.GetTime()))
+				fmt.Println("chatPerson: " + chatMessage.GetChatPerson())
+			}
 		}
 
 		wordFreqList := &proto_gen.WordFreqList{
 			WordFreqs: []*proto_gen.WordFreq{},
 		}
-		var wordFreq *proto_gen.WordFreq
-		wordFreq = &proto_gen.WordFreq{
+		wordFreq := &proto_gen.WordFreq{
 			Word: proto.String("车不车"),
 			Count: proto.Int(50),
 		}
@@ -93,10 +84,14 @@ func (ctrl *GetController) Get(context *gin.Context) {
 		if err != nil {
 			fmt.Println("proto.Marshal failed")
 		}
+
 		context.Data(200, "OK", responseData)
 
 		return
 	}
+
+	data, err := ctrl.dao.GetData(context, pos)
+
 	if context.Error(err) != nil {
 		log.Printf(err.Error())
 	} else {
