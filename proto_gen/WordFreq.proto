@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package proto_gen;
+
+message WordFreq {
+    required string word = 1;
+    required int32 count = 2;
+}
+
+message WordFreqList {
+    repeated WordFreq wordFreqs = 1;
+}
