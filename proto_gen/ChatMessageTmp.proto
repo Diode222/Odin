@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package proto_gen;
+
+message ChatMessage {
+    required string message = 1;
+    required int64 time = 2;
+    required string chatPerson = 3;
+}
+
+message ChatMessageList {
+    repeated ChatMessage chatMessages = 1;
+}
