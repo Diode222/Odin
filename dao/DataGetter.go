@@ -6,5 +6,5 @@ import (
 )
 
 type DataGetter interface {
-	GetData(ctx *gin.Context, dataAmountType model.DataAmountType, pos model.PartOfSpeech) (model.WordItems, error)
+	GetData(ctx *gin.Context, pos model.PartOfSpeech) (model.WordItems, error)
 }
