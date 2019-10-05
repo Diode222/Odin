@@ -5,8 +5,8 @@ import (
 	"github.com/Diode222/Odin/dao/wordFreq"
 	pb "github.com/Diode222/Odin/proto_gen"
 	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/proto"
 	"log"
+	"net/http"
 	"sync"
 )
 
@@ -26,73 +26,29 @@ func NewWordFreqCtrl(dao wordFreq.WordFreqDaoInterface) *WordFreqController {
 	return c
 }
 
-func (ctrl *WordFreqController) GetWordFreqList(context *gin.Context) {
+func (c *WordFreqController) GetWordFreqList(context *gin.Context) {
 	posStr := context.Query("part_of_speech")
-	var pos pb.PartOfSpeech_POSType
+	var pos pb.PartOfSpeech
 
 	switch posStr {
 	case "noun":
-		pos = pb.PartOfSpeech_NOUN
+		pos = pb.PartOfSpeech{Type: pb.PartOfSpeech_NOUN.Enum()}
 	case "verb":
-		pos = pb.PartOfSpeech_VERB
+		pos = pb.PartOfSpeech{Type: pb.PartOfSpeech_VERB.Enum()}
 	case "adjective":
-		pos = pb.PartOfSpeech_ADJECTIVE
+		pos = pb.PartOfSpeech{Type: pb.PartOfSpeech_ADJECTIVE.Enum()}
 	case "phrase":
-		pos = pb.PartOfSpeech_PHRASE
+		pos = pb.PartOfSpeech{Type: pb.PartOfSpeech_PHRASE.Enum()}
 	default:
-		pos = pb.PartOfSpeech_NOUN
+		pos = pb.PartOfSpeech{Type: pb.PartOfSpeech_NOUN.Enum()}
 	}
 
-	if (pos == pb.PartOfSpeech_NOUN) {
-		buf := make([]byte, 4096, 4096)
-		n, err := context.Request.Body.Read(buf)
-		fmt.Println("request method: ", context.Request.Method)
-
-		fmt.Println("read data length: ", n)
-		if context.Error(err) != nil {
-			log.Printf("Read request failed")
-		}
-
-		if n > 0 {
-			var chatMessageList *pb.ChatMessageList = &pb.ChatMessageList{
-				ChatMessages: []*pb.ChatMessage{},
-			}
-			err = proto.Unmarshal(buf[:n], chatMessageList)
-			if err != nil {
-				fmt.Println("proto unmarshal failed")
-			}
-			for _, chatMessage := range chatMessageList.ChatMessages {
-				fmt.Println("chatMessage: " + chatMessage.GetMessage())
-				fmt.Println("time: " + string(chatMessage.GetTime()))
-				fmt.Println("chatPerson: " + chatMessage.GetChatPerson())
-			}
-		}
-
-		wordFreqList := &pb.WordFreqList{
-			WordFreqs: []*pb.WordFreq{},
-		}
-		wordFreq := &pb.WordFreq{
-			Word: proto.String("车不车"),
-			Count: proto.Int(50),
-		}
-
-		wordFreqList.WordFreqs = append(wordFreqList.WordFreqs, wordFreq)
-
-		responseData, err := proto.Marshal(wordFreqList)
-		if err != nil {
-			fmt.Println("proto.Marshal failed")
-		}
-
-		context.Data(200, "OK", responseData)
-
-		return
+	wordFreqList, err := c.dao.GetWordFreqList(context.Request.Context(), pos)
+	if err != nil {
+		log.Printf(fmt.Sprintf("GetWordFreqList failed, err: %s", err.Error()))
+		context.Error(err)
+		context.String(http.StatusNotImplemented, "status", "Get word frequence list failed")
+	} else {
+		context.ProtoBuf(http.StatusOK, wordFreqList)
 	}
-
-	//data, err := ctrl.dao.GetData(context, pos)
-	//
-	//if context.Error(err) != nil {
-	//	log.Printf(err.Error())
-	//} else {
-	//	context.JSON(200, view.FormatWordItems(&data))
-	//}
 }
