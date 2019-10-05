@@ -14,7 +14,6 @@ func main() {
 	engine.Any("/wordfreq", handler.WordFreqCtrl.GetWordFreqList)
 	engine.Any("/chatmessage", handler.ChatMessageCtrl.PutChatMessageList)
 	err := engine.Run(fmt.Sprintf("%s:%d", conf.SERVICE_IP, conf.SERVICE_PORT))
-	//err := engine.Run("127.0.0.1:38888")
 	if err != nil {
 		log.Printf(fmt.Sprintf("Odin server can not run to listen port: %d, err: %s", 38888, err.Error()))
 	}

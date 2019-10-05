@@ -6,6 +6,7 @@ import (
 	pb "github.com/Diode222/Odin/proto_gen"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"sync"
 )
 
@@ -46,7 +47,8 @@ func (c *WordFreqController) GetWordFreqList(context *gin.Context) {
 	if err != nil {
 		log.Printf(fmt.Sprintf("GetWordFreqList failed, err: %s", err.Error()))
 		context.Error(err)
+		context.String(http.StatusNotImplemented, "status", "Get word frequence list failed")
 	} else {
-		context.ProtoBuf(200, wordFreqList)
+		context.ProtoBuf(http.StatusOK, wordFreqList)
 	}
 }

@@ -50,13 +50,13 @@ func (c *ChatMessageController) PutChatMessageList(context *gin.Context) {
 	status, err := c.dao.PutChatMessageList(context.Request.Context(), chatMessageList)
 	if err != nil {
 		log.Printf(fmt.Sprintf("PutChatMessageList failed, err: %s", err.Error()))
-		context.String(500, "status", "出错了")
 		context.Error(err)
+		context.String(http.StatusNotImplemented, "status", "Put chat message list failed")
 	} else {
 		if status.GetOK() {
-			context.String(200, "status", "搞定了")
+			context.String(http.StatusOK, "status", "OK")
 		} else {
-			context.String(200, "status", "咋回事")
+			context.String(http.StatusNotImplemented, "status", "Put chat message list failed")
 		}
 	}
 }
