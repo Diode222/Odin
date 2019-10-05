@@ -6,5 +6,5 @@ import (
 )
 
 type WordFreqDaoInterface interface {
-	GetFreqList(Context context.Context, pos pb.PartOfSpeech) (*pb.WordFreqList, error)
+	GetWordFreqList(Context context.Context, pos pb.PartOfSpeech) (*pb.WordFreqList, error)
 }
