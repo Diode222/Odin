@@ -1,6 +1,10 @@
 package dao
 
-import "github.com/Diode222/Odin/dao"
+import (
+	"github.com/Diode222/Odin/dao/chatMessage"
+	"github.com/Diode222/Odin/dao/wordFreq"
+)
 
-// TODO
-var GetDao dao.DataGetter
+var WordFreqDao wordFreq.WordFreqDaoInterface = wordFreq.NewWordFreqDao()
+
+var ChatMessageDao chatMessage.ChatMessageDaoInterface = chatMessage.NewChatMessageDao()

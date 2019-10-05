@@ -1,51 +1,49 @@
-package get
+package wordFreq
 
 import (
 	"fmt"
-	"github.com/Diode222/Odin/dao"
-	"github.com/Diode222/Odin/model"
-	"github.com/Diode222/Odin/proto_gen"
-	"github.com/Diode222/Odin/view"
+	"github.com/Diode222/Odin/dao/wordFreq"
+	pb "github.com/Diode222/Odin/proto_gen"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/proto"
 	"log"
 	"sync"
 )
 
-type GetController struct {
-	dao dao.DataGetter
+type WordFreqController struct {
+	dao wordFreq.WordFreqDaoInterface
 }
 
-var c *GetController
+var c *WordFreqController
 var once sync.Once
 
-func NewGetCtrl(getDAO dao.DataGetter) *GetController {
+func NewWordFreqCtrl(dao wordFreq.WordFreqDaoInterface) *WordFreqController {
 	once.Do(func() {
-		c = &GetController{
-			dao: getDAO,
+		c = &WordFreqController{
+			dao: dao,
 		}
 	})
 	return c
 }
 
-func (ctrl *GetController) Get(context *gin.Context) {
+func (ctrl *WordFreqController) GetWordFreqList(context *gin.Context) {
 	posStr := context.Query("part_of_speech")
-	var pos model.PartOfSpeech
+	var pos pb.PartOfSpeech_POSType
 
 	switch posStr {
 	case "noun":
-		pos = model.NOUN
+		pos = pb.PartOfSpeech_NOUN
 	case "verb":
-		pos = model.VERB
+		pos = pb.PartOfSpeech_VERB
 	case "adjective":
-		pos = model.ADJECTIVE
+		pos = pb.PartOfSpeech_ADJECTIVE
 	case "phrase":
-		pos = model.PHRASE
+		pos = pb.PartOfSpeech_PHRASE
 	default:
-		pos = model.NOUN
+		pos = pb.PartOfSpeech_NOUN
 	}
 
-	if (pos == model.NOUN) {
+	if (pos == pb.PartOfSpeech_NOUN) {
 		buf := make([]byte, 4096, 4096)
 		n, err := context.Request.Body.Read(buf)
 		fmt.Println("request method: ", context.Request.Method)
@@ -56,8 +54,8 @@ func (ctrl *GetController) Get(context *gin.Context) {
 		}
 
 		if n > 0 {
-			var chatMessageList *proto_gen.ChatMessageList = &proto_gen.ChatMessageList{
-				ChatMessages: []*proto_gen.ChatMessage{},
+			var chatMessageList *pb.ChatMessageList = &pb.ChatMessageList{
+				ChatMessages: []*pb.ChatMessage{},
 			}
 			err = proto.Unmarshal(buf[:n], chatMessageList)
 			if err != nil {
@@ -70,10 +68,10 @@ func (ctrl *GetController) Get(context *gin.Context) {
 			}
 		}
 
-		wordFreqList := &proto_gen.WordFreqList{
-			WordFreqs: []*proto_gen.WordFreq{},
+		wordFreqList := &pb.WordFreqList{
+			WordFreqs: []*pb.WordFreq{},
 		}
-		wordFreq := &proto_gen.WordFreq{
+		wordFreq := &pb.WordFreq{
 			Word: proto.String("车不车"),
 			Count: proto.Int(50),
 		}
@@ -90,11 +88,11 @@ func (ctrl *GetController) Get(context *gin.Context) {
 		return
 	}
 
-	data, err := ctrl.dao.GetData(context, pos)
-
-	if context.Error(err) != nil {
-		log.Printf(err.Error())
-	} else {
-		context.JSON(200, view.FormatWordItems(&data))
-	}
+	//data, err := ctrl.dao.GetData(context, pos)
+	//
+	//if context.Error(err) != nil {
+	//	log.Printf(err.Error())
+	//} else {
+	//	context.JSON(200, view.FormatWordItems(&data))
+	//}
 }

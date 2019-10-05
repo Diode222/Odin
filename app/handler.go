@@ -2,22 +2,24 @@ package app
 
 import (
 	"github.com/Diode222/Odin/app/ctrl"
-	"github.com/Diode222/Odin/controller/get"
+	"github.com/Diode222/Odin/controller/chatMessage"
+	"github.com/Diode222/Odin/controller/wordFreq"
 	"sync"
 )
 
 type handler struct {
-	GetCtrl *get.GetController
+	WordFreqCtrl *wordFreq.WordFreqController
+	ChatMessageCtrl *chatMessage.ChatMessageController
 }
 
 var h *handler
 var once sync.Once
 
-// TODO
 func NewHandler() *handler {
 	once.Do(func() {
 		h = &handler{
-			GetCtrl: ctrl.GetCtrl,
+			WordFreqCtrl: ctrl.WordFreqCtrl,
+			ChatMessageCtrl: ctrl.ChatMessageCtrl,
 		}
 	})
 	return h
