@@ -16,6 +16,6 @@ func NewWordFreqDao() *WordFreqDao {
 	}
 }
 
-func (d *WordFreqDao) GetFreqList(Context context.Context, pos pb.PartOfSpeech) (*pb.WordFreqList, error) {
+func (d *WordFreqDao) GetWordFreqList(Context context.Context, pos pb.PartOfSpeech) (*pb.WordFreqList, error) {
 	return d.client.GetWordFreqList(Context, &pos)
 }
