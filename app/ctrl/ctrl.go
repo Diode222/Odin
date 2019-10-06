@@ -8,4 +8,4 @@ import (
 
 var WordFreqCtrl *wordFreq.WordFreqController = wordFreq.NewWordFreqCtrl(dao.WordFreqDao)
 
-var ChatMessageCtrl *chatMessage.ChatMessageController = chatMessage.NewChatMessageCtrl(dao.ChatMessageDao)
+var ChatMessageCtrl *chatMessage.ChatMessageController = chatMessage.NewChatMessageCtrl(dao.ChatMessageDao, dao.WordSplitDao)
