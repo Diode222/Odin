@@ -27,6 +27,33 @@ func NewWordFreqCtrl(dao wordFreq.WordFreqDaoInterface) *WordFreqController {
 }
 
 func (c *WordFreqController) GetWordFreqList(context *gin.Context) {
+
+	//list := &pb.ChatMessageList{
+	//	ChatMessages:         []*pb.ChatMessage{},
+	//}
+	//msg1 := "名词是一种很好的词语"
+	//var time1 int64 = 2345234
+	//person1 := "文件聊天助手"
+	//list.ChatMessages = append(list.ChatMessages, &pb.ChatMessage{
+	//	Message:              &msg1,
+	//	Time:                 &time1,
+	//	ChatPerson:           &person1,
+	//	WordAndPosList:       nil,
+	//})
+	//l, e := client.GetWordSplitClient().GetWordSplittedMessageList(context.Request.Context(), list)
+	//if e != nil {
+	//	fmt.Println("test mimiron get failed, err: ", e.Error())
+	//}
+	//fmt.Println("xixi:" + string(len(l.GetChatMessages())))
+	//if len(l.GetChatMessages()) > 0 {
+	//	for _, chatMessage := range l.GetChatMessages() {
+	//		for _, x := range chatMessage.GetWordAndPosList() {
+	//			fmt.Println(x.GetWord())
+	//			fmt.Println(x.GetPos().GetType())
+	//		}
+	//	}
+	//}
+
 	posStr := context.Query("part_of_speech")
 	var pos pb.PartOfSpeech
 
@@ -49,6 +76,7 @@ func (c *WordFreqController) GetWordFreqList(context *gin.Context) {
 		context.Error(err)
 		context.String(http.StatusNotImplemented, "status", "Get word frequence list failed")
 	} else {
+		log.Println("wordFreqList length: ", len(wordFreqList.WordFreqs))
 		context.ProtoBuf(http.StatusOK, wordFreqList)
 	}
 }

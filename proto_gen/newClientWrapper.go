@@ -2,7 +2,7 @@ package proto_gen
 
 import "google.golang.org/grpc"
 
-func NewWordFreqClientWrapper(cc *grpc.ClientConn) interface{} {
+func NewWordFreqWrapper(cc *grpc.ClientConn) interface{} {
 	return NewWordFreqListServiceClient(cc)
 }
 
