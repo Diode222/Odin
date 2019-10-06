@@ -50,8 +50,6 @@ func (c *ChatMessageController) PutChatMessageList(context *gin.Context) {
 		return
 	}
 
-	log.Println("before word split chatMessageList length: ", len(chatMessageList.GetChatMessages()))
-
 	chatMessageList, err = c.wordSplitDao.GetWordSplittedMessageList(context.Request.Context(), chatMessageList)
 	if err != nil {
 		log.Println(fmt.Sprintf("GetWordSplittedMessageList failed, err: %s", err.Error()))
@@ -63,7 +61,6 @@ func (c *ChatMessageController) PutChatMessageList(context *gin.Context) {
 		log.Println("No available splitted words data")
 		context.String(http.StatusOK, "status", "OK")
 	}
-	log.Println("after word split chatMessageList length: ", len(chatMessageList.GetChatMessages()))
 
 	status, err := c.chatMessageDao.PutChatMessageList(context.Request.Context(), chatMessageList)
 	if err != nil {
@@ -72,7 +69,6 @@ func (c *ChatMessageController) PutChatMessageList(context *gin.Context) {
 		context.String(http.StatusInternalServerError, "status", "Put chat message list failed")
 	} else {
 		if status.GetOK() {
-			log.Println("status is really ok")
 			context.String(http.StatusOK, "status", "OK")
 		} else {
 			context.String(http.StatusInternalServerError, "status", "Put chat message list failed")
