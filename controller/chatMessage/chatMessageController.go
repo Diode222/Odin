@@ -3,6 +3,7 @@ package chatMessage
 import (
 	"fmt"
 	"github.com/Diode222/Odin/dao/chatMessage"
+	"github.com/Diode222/Odin/dao/wordSplit"
 	pb "github.com/Diode222/Odin/proto_gen"
 	"github.com/gin-gonic/gin"
 	"github.com/gogo/protobuf/proto"
@@ -12,16 +13,18 @@ import (
 )
 
 type ChatMessageController struct {
-	dao chatMessage.ChatMessageDaoInterface
+	chatMessageDao chatMessage.ChatMessageDaoInterface
+	wordSplitDao wordSplit.WordSplitDaoInterface
 }
 
 var c *ChatMessageController
 var once sync.Once
 
-func NewChatMessageCtrl(dao chatMessage.ChatMessageDaoInterface) *ChatMessageController {
+func NewChatMessageCtrl(chatMessageDao chatMessage.ChatMessageDaoInterface, wordSplitDao wordSplit.WordSplitDaoInterface) *ChatMessageController {
 	once.Do(func() {
 		c = &ChatMessageController{
-			dao: dao,
+			chatMessageDao: chatMessageDao,
+			wordSplitDao: wordSplitDao,
 		}
 	})
 	return c
@@ -47,7 +50,18 @@ func (c *ChatMessageController) PutChatMessageList(context *gin.Context) {
 		return
 	}
 
-	status, err := c.dao.PutChatMessageList(context.Request.Context(), chatMessageList)
+	chatMessageList, err = c.wordSplitDao.GetWordSplittedMessageList(context.Request.Context(), chatMessageList)
+	if err != nil {
+		log.Println(fmt.Sprintf("GetWordSplittedMessageList failed, err: %s", err.Error()))
+		context.Error(err)
+		return
+	}
+	if len(chatMessageList.GetChatMessages()) <= 0 {
+		log.Println("No available splitted words data")
+		context.String(http.StatusOK, "status", "OK")
+	}
+
+	status, err := c.chatMessageDao.PutChatMessageList(context.Request.Context(), chatMessageList)
 	if err != nil {
 		log.Printf(fmt.Sprintf("PutChatMessageList failed, err: %s", err.Error()))
 		context.Error(err)

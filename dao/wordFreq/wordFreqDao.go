@@ -12,10 +12,10 @@ type WordFreqDao struct {
 
 func NewWordFreqDao() *WordFreqDao {
 	return &WordFreqDao{
-		client: client.GetWordFreqListClient(),
+		client: client.GetWordFreqClient(),
 	}
 }
 
-func (d *WordFreqDao) GetWordFreqList(Context context.Context, pos pb.PartOfSpeech) (*pb.WordFreqList, error) {
-	return d.client.GetWordFreqList(Context, &pos)
+func (d *WordFreqDao) GetWordFreqList(context context.Context, pos pb.PartOfSpeech) (*pb.WordFreqList, error) {
+	return d.client.GetWordFreqList(context, &pos)
 }

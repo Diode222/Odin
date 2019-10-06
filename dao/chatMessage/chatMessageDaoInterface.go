@@ -6,5 +6,5 @@ import (
 )
 
 type ChatMessageDaoInterface interface {
-	PutChatMessageList(ctx context.Context, chatMessageList *pb.ChatMessageList) (*pb.ChatMessageListServiceStatus, error)
+	PutChatMessageList(context context.Context, chatMessageList *pb.ChatMessageList) (*pb.ChatMessageListServiceStatus, error)
 }

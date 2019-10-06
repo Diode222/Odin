@@ -12,7 +12,7 @@ type ChatMessageDao struct {
 
 func NewChatMessageDao() *ChatMessageDao {
 	return &ChatMessageDao{
-		client: client.GetChatMessageListClient(),
+		client: client.GetChatMessageClient(),
 	}
 }
 
